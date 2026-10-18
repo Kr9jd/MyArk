@@ -10,9 +10,10 @@ static PVOID g_BugCheckListHead = nullptr;
 static PVOID g_LastChanceShutdownQueueHead = nullptr;
 static PVOID g_IopNotifyShutdownQueueHead = nullptr;
 
+// Resolve kernel callback list heads via pattern scanning.
 void CallbackInit()
 {
-	// 解析 PspCreateProcessNotifyRoutine 地址
+	// Resolve the PspCreateProcessNotifyRoutine address
 	PUCHAR hit = (PUCHAR)PatternScan((PVOID)PsSetCreateProcessNotifyRoutine, 0x80, "E8 ?? ?? ?? ??");
 	if (hit) {
 		INT32 offset = *(INT32*)(hit + 1);
@@ -86,6 +87,7 @@ void CallbackInit()
 	}
 }
 
+// Enumerate CmRegisterCallback registrations.
 NTSTATUS CallbackQueryReg(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	*bytesWritten = 0;
@@ -143,6 +145,7 @@ NTSTATUS CallbackQueryReg(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PT
 	return STATUS_SUCCESS;
 }
 
+// Enumerate ObRegisterCallbacks registrations (process/thread).
 NTSTATUS CallbackQueryOb(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	*bytesWritten = 0;
@@ -168,7 +171,7 @@ NTSTATUS CallbackQueryOb(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR
 	resp->Header.TotalSize = needed;
 	resp->Header.ProtocolVersion = MYARK_PROTOCOL_VERSION;
 
-	// 第二遍：填充条目
+	// Second pass: fill entries
 	PRTL_PROCESS_MODULES modInfo = QuerySystemModules();
 
 	ULONG i = 0;
@@ -202,6 +205,7 @@ NTSTATUS CallbackQueryOb(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR
 	return STATUS_SUCCESS;
 }
 
+// Enumerate process/thread/image notify routines.
 NTSTATUS CallbackQueryProcess(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	*bytesWritten = 0;
@@ -211,7 +215,7 @@ NTSTATUS CallbackQueryProcess(PVOID outputBuffer, ULONG outputBufferLength, ULON
 	INT64* pImageArray = (INT64*)g_PspLoadImageNotifyRoutine;
 	PRTL_PROCESS_MODULES modInfo = QuerySystemModules();
 
-	// 第一遍：统计有效条目
+	// First pass: count valid entries
 	ULONG count = 0;
 	if (pProcArray) {
 		for (int i = 0; i < 64; i++) {
@@ -245,7 +249,7 @@ NTSTATUS CallbackQueryProcess(PVOID outputBuffer, ULONG outputBufferLength, ULON
 	resp->Header.TotalSize = needed;
 	resp->Header.ProtocolVersion = MYARK_PROTOCOL_VERSION;
 
-	// 第二遍：填充条目
+	// Second pass: fill entries
 	ULONG idx = 0;
 	if (pProcArray) {
 		for (int i = 0; i < 64 && idx < count; i++) {
@@ -293,6 +297,7 @@ NTSTATUS CallbackQueryProcess(PVOID outputBuffer, ULONG outputBufferLength, ULON
 	return STATUS_SUCCESS;
 }
 
+// Enumerate KeRegisterBugCheckReasonCallback callbacks.
 NTSTATUS CallbackQueryBugCheckReason(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	*bytesWritten = 0;
@@ -338,6 +343,7 @@ NTSTATUS CallbackQueryBugCheckReason(PVOID outputBuffer, ULONG outputBufferLengt
 	return STATUS_SUCCESS;
 }
 
+// Enumerate IoRegisterLastChanceShutdownNotification callbacks.
 NTSTATUS CallbackQueryLastChanceShutdown(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	*bytesWritten = 0;
@@ -387,6 +393,7 @@ NTSTATUS CallbackQueryLastChanceShutdown(PVOID outputBuffer, ULONG outputBufferL
 	return STATUS_SUCCESS;
 }
 
+// Enumerate IoRegisterShutdownNotification callbacks.
 NTSTATUS CallbackQueryNotifyShutdown(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	*bytesWritten = 0;
@@ -436,6 +443,7 @@ NTSTATUS CallbackQueryNotifyShutdown(PVOID outputBuffer, ULONG outputBufferLengt
 	return STATUS_SUCCESS;
 }
 
+// Enumerate KeRegisterBugCheckCallback callbacks.
 NTSTATUS CallbackQueryBugCheck(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	*bytesWritten = 0;

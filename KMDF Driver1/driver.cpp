@@ -11,12 +11,13 @@ PVOID g_PiLookupInDDBCache;
 PVOID g_PiDDBCacheTable;
 PVOID g_KernelHashBucketList;
 
+// Enumerate loaded driver objects from the object directory.
 NTSTATUS DriverQuery(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	if (!g_DriverObject || !g_DriverObject->DriverSection)
 		return STATUS_UNSUCCESSFUL;
 
-	// 第一遍：统计数量
+	// First pass: count entries
 	ULONG count = 0;
 	POBJECT_HEADER header = (POBJECT_HEADER)((ULONG_PTR)g_DriverObject - 0x30);
 	POBJECT_HEADER_NAME_INFO headerNameInfo = (POBJECT_HEADER_NAME_INFO)((ULONG_PTR)header - sizeof(OBJECT_HEADER_NAME_INFO));
@@ -47,7 +48,7 @@ NTSTATUS DriverQuery(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* by
 	resp->Header.TotalSize = needed;
 	resp->Header.ProtocolVersion = MYARK_PROTOCOL_VERSION;
 
-	// 第二遍：填充
+	// Second pass: fill entries
 	ULONG index = 0;
 	for (int i = 0;i < 37;i++) {
 		POBJECT_DIRECTORY_ENTRY entry = directory->HashBuckets[i];
@@ -84,6 +85,7 @@ NTSTATUS DriverQuery(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* by
 	return STATUS_SUCCESS;
 }
 
+// Enumerate unloaded drivers from MmUnloadedDrivers.
 NTSTATUS UnloadDriverQuery1(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	*bytesWritten = 0;
@@ -122,7 +124,7 @@ NTSTATUS UnloadDriverQuery1(PVOID outputBuffer, ULONG outputBufferLength, ULONG_
 	if (!g_MmUnloadedDrivers || !MmIsAddressValid(g_MmUnloadedDrivers))
 		return STATUS_UNSUCCESSFUL;
 
-	// 第一遍：统计有效条目（校验每个 UnloadDriverEntry 及名字指针）
+	// First pass: count valid entries (validate each UnloadDriverEntry and its name pointer)
 	ULONG count = 0;
 	for (ULONG i = 0; i < 32; i++)
 	{
@@ -151,7 +153,7 @@ NTSTATUS UnloadDriverQuery1(PVOID outputBuffer, ULONG outputBufferLength, ULONG_
 	resp->Header.TotalSize = needed;
 	resp->Header.ProtocolVersion = MYARK_PROTOCOL_VERSION;
 
-	// 第二遍：填充
+	// Second pass: fill entries
 	ULONG index = 0;
 	for (ULONG i = 0; i < 32 && index < count; i++)
 	{
@@ -182,6 +184,7 @@ NTSTATUS UnloadDriverQuery1(PVOID outputBuffer, ULONG outputBufferLength, ULONG_
 	return STATUS_SUCCESS;
 }
 
+// Enumerate unloaded drivers from the PiDDBCacheTable.
 NTSTATUS UnloadDriverQuery2(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	*bytesWritten = 0;
@@ -229,7 +232,7 @@ NTSTATUS UnloadDriverQuery2(PVOID outputBuffer, ULONG outputBufferLength, ULONG_
 	resp->Header.TotalSize = needed;
 	resp->Header.ProtocolVersion = MYARK_PROTOCOL_VERSION;
 
-	// 第二遍：填充
+	// Second pass: fill entries
 	ULONG index = 0;
 	for (PiDDBCacheEntry* p = (PiDDBCacheEntry*)RtlEnumerateGenericTableAvl((PRTL_AVL_TABLE)g_PiDDBCacheTable, TRUE);
 		p != NULL;
@@ -254,6 +257,7 @@ NTSTATUS UnloadDriverQuery2(PVOID outputBuffer, ULONG outputBufferLength, ULONG_
 	return STATUS_SUCCESS;
 }
 
+// Enumerate unloaded drivers from the ci.dll kernel hash bucket list.
 NTSTATUS UnloadDriverQuery3(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	*bytesWritten = 0;
@@ -311,7 +315,7 @@ NTSTATUS UnloadDriverQuery3(PVOID outputBuffer, ULONG outputBufferLength, ULONG_
 	resp->Header.TotalSize = needed;
 	resp->Header.ProtocolVersion = MYARK_PROTOCOL_VERSION;
 
-	// 第二遍：填充
+	// Second pass: fill entries
 	ULONG index = 0;
 	for (KernelHashBucketEntry* p = (KernelHashBucketEntry*)g_KernelHashBucketList;
 		p != NULL;
@@ -336,7 +340,7 @@ NTSTATUS UnloadDriverQuery3(PVOID outputBuffer, ULONG outputBufferLength, ULONG_
 	return STATUS_SUCCESS;
 }
 
-// 通过对象头 NAME_INFO 获取设备对象名（类似 DriverQuery 的做法）
+// Get the device object name from its OBJECT_HEADER NAME_INFO (same approach as DriverQuery)
 NTSTATUS DriverDeviceQuery(PVOID inputBuffer, ULONG inputLength, PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	*bytesWritten = 0;
@@ -349,7 +353,7 @@ NTSTATUS DriverDeviceQuery(PVOID inputBuffer, ULONG inputLength, PVOID outputBuf
 	if (!driverObject || !MmIsAddressValid(driverObject))
 		return STATUS_INVALID_PARAMETER;
 
-	// 第一遍：统计设备数量
+	// First pass: count devices
 	ULONG count = 0;
 	PDEVICE_OBJECT device = driverObject->DeviceObject;
 	while (device && MmIsAddressValid(device))
@@ -371,7 +375,7 @@ NTSTATUS DriverDeviceQuery(PVOID inputBuffer, ULONG inputLength, PVOID outputBuf
 	resp->Header.TotalSize = needed;
 	resp->Header.ProtocolVersion = MYARK_PROTOCOL_VERSION;
 
-	// 第二遍：填充
+	// Second pass: fill entries
 	ULONG index = 0;
 	device = driverObject->DeviceObject;
 	while (device && MmIsAddressValid(device) && index < count)
@@ -397,6 +401,7 @@ NTSTATUS DriverDeviceQuery(PVOID inputBuffer, ULONG inputLength, PVOID outputBuf
 	return STATUS_SUCCESS;
 }
 
+// Enumerate DriverObject->MajorFunction dispatch table.
 NTSTATUS DriverDispatchQuery(PVOID inputBuffer, ULONG inputLength, PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	*bytesWritten = 0;
@@ -438,6 +443,7 @@ NTSTATUS DriverDispatchQuery(PVOID inputBuffer, ULONG inputLength, PVOID outputB
 	return STATUS_SUCCESS;
 }
 
+// Read a block of kernel memory (page-safe).
 NTSTATUS ReadMemory(PVOID inputBuffer, ULONG inputLength, PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	*bytesWritten = 0;

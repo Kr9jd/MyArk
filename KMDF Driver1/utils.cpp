@@ -1,6 +1,7 @@
-﻿#include "utils.h"
+#include "utils.h"
 #include <ntimage.h>
 
+// Query the loaded kernel module list.
 PRTL_PROCESS_MODULES QuerySystemModules()
 {
 	ULONG size = 0;
@@ -21,12 +22,14 @@ PRTL_PROCESS_MODULES QuerySystemModules()
 	return modInfo;
 }
 
+// Free a module list returned by QuerySystemModules.
 void FreeSystemModules(PRTL_PROCESS_MODULES modInfo)
 {
 	if (modInfo)
 		ExFreePoolWithTag(modInfo, 'kMrA');
 }
 
+// Resolve a kernel address to its owning module name.
 void ResolveAddressToModuleName(ULONG64 addr, PRTL_PROCESS_MODULES modInfo, WCHAR* outName, ULONG maxChars)
 {
 	RtlZeroMemory(outName, maxChars * sizeof(WCHAR));
@@ -57,6 +60,7 @@ void ResolveAddressToModuleName(ULONG64 addr, PRTL_PROCESS_MODULES modInfo, WCHA
 	}
 }
 
+// Resolve a kernel address to its owning module full path.
 void ResolveAddressToModulePath(ULONG64 addr, PRTL_PROCESS_MODULES modInfo, WCHAR* outPath, ULONG maxChars)
 {
 	RtlZeroMemory(outPath, maxChars * sizeof(WCHAR));
@@ -88,6 +92,7 @@ void ResolveAddressToModulePath(ULONG64 addr, PRTL_PROCESS_MODULES modInfo, WCHA
 	}
 }
 
+// Copy a UNICODE_STRING into a fixed WCHAR buffer.
 void CopyNameToWchar(PWCHAR out, ULONG maxChars, PCUNICODE_STRING name)
 {
 	if (!name || !name->Buffer)
@@ -103,19 +108,21 @@ void CopyNameToWchar(PWCHAR out, ULONG maxChars, PCUNICODE_STRING name)
 	out[chars] = 0;
 }
 
+// Get a device object name from its OBJECT_HEADER NAME_INFO.
 void GetDeviceObjectName(PVOID object, PWCHAR out, ULONG maxChars)
 {
 	out[0] = 0;
 	if (!object)
 		return;
 
-	// OBJECT_HEADER 位于对象前方，NAME_INFO 位于 OBJECT_HEADER 前方
+	// OBJECT_HEADER precedes the object body; NAME_INFO precedes OBJECT_HEADER
 	POBJECT_HEADER_NAME_INFO nameInfo =
 		(POBJECT_HEADER_NAME_INFO)((ULONG_PTR)object - 0x30 - sizeof(OBJECT_HEADER_NAME_INFO));
 	if (nameInfo && MmIsAddressValid(nameInfo) && nameInfo->Name.Buffer && nameInfo->Name.Length > 0)
 		CopyNameToWchar(out, maxChars, &nameInfo->Name);
 }
 
+// Get the ntoskrnl base address.
 PVOID GetNtosBase(PDRIVER_OBJECT DrvObj)
 {
 	if (!DrvObj || !DrvObj->DriverSection)
@@ -144,6 +151,7 @@ PVOID GetNtosBase(PDRIVER_OBJECT DrvObj)
 	return NULL;
 }
 
+// Get the base address of a loaded module by name.
 PVOID GetModuleBase(PDRIVER_OBJECT DrvObj, PCWSTR moduleName)
 {
 	if (!DrvObj || !DrvObj->DriverSection)
@@ -181,6 +189,7 @@ static LONG CompareAnsiString(PCSTR a, PCSTR b)
 	return (LONG)(UCHAR)*a - (LONG)(UCHAR)*b;
 }
 
+// Resolve an exported function address by name.
 PVOID GetExportByName(PVOID moduleBase, PCSTR functionName)
 {
 	if (!moduleBase || !functionName || !MmIsAddressValid(moduleBase)) {

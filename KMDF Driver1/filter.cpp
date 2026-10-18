@@ -4,6 +4,7 @@
 
 #define MYARK_MAX_OPS_PER_FILTER 128
 
+// Enumerate minifilters and their callbacks.
 NTSTATUS FilterQuery(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	*bytesWritten = 0;

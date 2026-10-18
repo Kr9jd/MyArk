@@ -1,4 +1,4 @@
-﻿
+
 #include "header.h"
 #include "utils.h"
 #include "protocol.h"
@@ -39,6 +39,7 @@ static void WideCopy(WCHAR* dst, ULONG maxChars, PCWSTR src)
 	dst[len] = 0;
 }
 
+// Enumerate WFP filters.
 NTSTATUS WfpFilterQuery(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	NTSTATUS status;
@@ -149,6 +150,7 @@ NTSTATUS WfpFilterQuery(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR*
 	return STATUS_SUCCESS;
 }
 
+// Enumerate WFP callouts.
 NTSTATUS WfpCalloutQuery(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	NTSTATUS status;
@@ -192,7 +194,7 @@ NTSTATUS WfpCalloutQuery(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR
 
 	ULONG count = 0;
 
-	//第一轮
+	// First pass
 	for (int i = 0;i < 51;i++) {
 		PCALLOUT_DATA calloutData = (PCALLOUT_DATA)((ULONG_PTR)g_CalloutSrc + 40 * i);
 		if (calloutData->flags & 1) {
@@ -200,7 +202,7 @@ NTSTATUS WfpCalloutQuery(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR
 		}
 	}
 
-	//第二轮
+	// Second pass
 	for (int i = 256;i < g_CalloutCount;i++) {
 		PCALLOUT_DATA calloutData = (PCALLOUT_DATA)((ULONG_PTR)g_CalloutSrc + 40 * i);
 		if (calloutData->flags & 1) {

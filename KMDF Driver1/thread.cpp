@@ -6,6 +6,7 @@ extern "C" NTSTATUS NTAPI PsLookupProcessByProcessId(HANDLE ProcessId, PEPROCESS
 
 #define EPROCESS_THREAD_LIST_HEAD_OFFSET 0x370
 
+// Enumerate system process threads.
 NTSTATUS SystemThreadQuery(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	*bytesWritten = 0;
@@ -22,7 +23,7 @@ NTSTATUS SystemThreadQuery(PVOID outputBuffer, ULONG outputBufferLength, ULONG_P
 		return STATUS_UNSUCCESSFUL;
 	}
 
-	// 第一遍：统计线程数量
+	// First pass: count threads
 	ULONG count = 0;
 	for (LIST_ENTRY* p = threadListHead->Flink;
 		p != threadListHead && MmIsAddressValid(p);

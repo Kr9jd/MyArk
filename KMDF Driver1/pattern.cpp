@@ -43,6 +43,7 @@ static BOOLEAN ParsePattern(const CHAR* pattern, UCHAR* bytes, BOOLEAN* wildcard
     return count > 0;
 }
 
+// Scan a memory range for a byte pattern with wildcards.
 PVOID PatternScan(PVOID base, ULONG size, const CHAR* pattern)
 {
     if (!base || !size || !pattern)

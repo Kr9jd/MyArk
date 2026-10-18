@@ -1,4 +1,4 @@
-﻿#include "kerneldevice.h"
+#include "kerneldevice.h"
 #include "protocol.h"
 #include "pattern.h"
 #include <unordered_map>
@@ -26,6 +26,7 @@ static QString wcharToPath(const WCHAR* w)
     return s;
 }
 
+// Open a handle to the driver device.
 bool KernelDevice::connectDevice()
 {
     if (m_hDevice != INVALID_HANDLE_VALUE)
@@ -37,6 +38,7 @@ bool KernelDevice::connectDevice()
     return m_hDevice != INVALID_HANDLE_VALUE;
 }
 
+// Close the driver device handle.
 void KernelDevice::disconnectDevice()
 {
     if (m_hDevice != INVALID_HANDLE_VALUE)
@@ -46,6 +48,7 @@ void KernelDevice::disconnectDevice()
     }
 }
 
+// Send an IOCTL with no input and return the raw response buffer.
 std::vector<BYTE> KernelDevice::doIoctl(DWORD code)
 {
     std::vector<BYTE> buf;
@@ -73,6 +76,7 @@ std::vector<BYTE> KernelDevice::doIoctl(DWORD code)
     return buf;
 }
 
+// Send an IOCTL with an input buffer and return the raw response.
 std::vector<BYTE> KernelDevice::doIoctlWithInput(DWORD code, const void* input, DWORD inputSize)
 {
     std::vector<BYTE> buf;
@@ -101,6 +105,7 @@ std::vector<BYTE> KernelDevice::doIoctlWithInput(DWORD code, const void* input, 
     return buf;
 }
 
+// Build a syscall-number to name map from a module export table.
 void KernelDevice::buildSyscallNameMapFor(PCWSTR moduleName, std::unordered_map<ULONG, QString>& outMap)
 {
     if (!outMap.empty())
@@ -150,6 +155,7 @@ void KernelDevice::buildSyscallNameMapFor(PCWSTR moduleName, std::unordered_map<
     delete[] hits;
 }
 
+// Query ObRegisterCallbacks registrations.
 std::vector<ObCallbackDisplayEntry> KernelDevice::queryObCallbacks()
 {
     std::vector<ObCallbackDisplayEntry> result;
@@ -172,6 +178,7 @@ std::vector<ObCallbackDisplayEntry> KernelDevice::queryObCallbacks()
     return result;
 }
 
+// Query process/thread/image notify routines.
 std::vector<ProcessCallbackDisplayEntry> KernelDevice::queryProcessCallbacks()
 {
     std::vector<ProcessCallbackDisplayEntry> result;
@@ -192,6 +199,7 @@ std::vector<ProcessCallbackDisplayEntry> KernelDevice::queryProcessCallbacks()
     return result;
 }
 
+// Query CmRegisterCallback registrations.
 std::vector<RegCallbackDisplayEntry> KernelDevice::queryRegCallbacks()
 {
     std::vector<RegCallbackDisplayEntry> result;
@@ -212,6 +220,7 @@ std::vector<RegCallbackDisplayEntry> KernelDevice::queryRegCallbacks()
     return result;
 }
 
+// Query KeRegisterBugCheckReasonCallback callbacks.
 std::vector<BugCheckCallbackDisplayEntry> KernelDevice::queryBugCheckCallbacks()
 {
     std::vector<BugCheckCallbackDisplayEntry> result;
@@ -232,6 +241,7 @@ std::vector<BugCheckCallbackDisplayEntry> KernelDevice::queryBugCheckCallbacks()
     return result;
 }
 
+// Query last-chance shutdown callbacks.
 std::vector<ShutdownCallbackDisplayEntry> KernelDevice::queryShutdownCallbacks()
 {
     std::vector<ShutdownCallbackDisplayEntry> result;
@@ -251,6 +261,7 @@ std::vector<ShutdownCallbackDisplayEntry> KernelDevice::queryShutdownCallbacks()
     return result;
 }
 
+// Query KeRegisterBugCheckCallback callbacks.
 std::vector<BugCheckRegisterDisplayEntry> KernelDevice::queryBugCheckRegisters()
 {
     std::vector<BugCheckRegisterDisplayEntry> result;
@@ -271,6 +282,7 @@ std::vector<BugCheckRegisterDisplayEntry> KernelDevice::queryBugCheckRegisters()
     return result;
 }
 
+// Query IoRegisterShutdownNotification callbacks.
 std::vector<NotifyShutdownDisplayEntry> KernelDevice::queryNotifyShutdown()
 {
     std::vector<NotifyShutdownDisplayEntry> result;
@@ -290,6 +302,7 @@ std::vector<NotifyShutdownDisplayEntry> KernelDevice::queryNotifyShutdown()
     return result;
 }
 
+// Query DPC and IO timers.
 std::vector<TimerDisplayEntry> KernelDevice::queryTimers()
 {
     std::vector<TimerDisplayEntry> result;
@@ -311,6 +324,7 @@ std::vector<TimerDisplayEntry> KernelDevice::queryTimers()
     return result;
 }
 
+// Query the SSDT.
 std::vector<SsdtDisplayEntry> KernelDevice::querySsdt()
 {
     std::vector<SsdtDisplayEntry> result;
@@ -340,6 +354,7 @@ std::vector<SsdtDisplayEntry> KernelDevice::querySsdt()
     return result;
 }
 
+// Query the shadow SSDT.
 std::vector<SsdtDisplayEntry> KernelDevice::queryShadowSsdt()
 {
     std::vector<SsdtDisplayEntry> result;
@@ -369,6 +384,7 @@ std::vector<SsdtDisplayEntry> KernelDevice::queryShadowSsdt()
     return result;
 }
 
+// Query the IDT.
 std::vector<IdtDisplayEntry> KernelDevice::queryIdt()
 {
     std::vector<IdtDisplayEntry> result;
@@ -393,6 +409,7 @@ std::vector<IdtDisplayEntry> KernelDevice::queryIdt()
     return result;
 }
 
+// Query system threads.
 std::vector<SystemThreadDisplayEntry> KernelDevice::querySystemThreads()
 {
     std::vector<SystemThreadDisplayEntry> result;
@@ -417,6 +434,7 @@ std::vector<SystemThreadDisplayEntry> KernelDevice::querySystemThreads()
     return result;
 }
 
+// Query worker threads.
 std::vector<WorkThreadDisplayEntry> KernelDevice::queryWorkThreads()
 {
     std::vector<WorkThreadDisplayEntry> result;
@@ -440,6 +458,7 @@ std::vector<WorkThreadDisplayEntry> KernelDevice::queryWorkThreads()
     return result;
 }
 
+// Query WFP filters.
 std::vector<WfpFilterDisplayEntry> KernelDevice::queryWfpFilters()
 {
     std::vector<WfpFilterDisplayEntry> result;
@@ -462,6 +481,7 @@ std::vector<WfpFilterDisplayEntry> KernelDevice::queryWfpFilters()
     return result;
 }
 
+// Query WFP callouts.
 std::vector<WfpCalloutDisplayEntry> KernelDevice::queryWfpCallouts()
 {
     std::vector<WfpCalloutDisplayEntry> result;
@@ -484,6 +504,7 @@ std::vector<WfpCalloutDisplayEntry> KernelDevice::queryWfpCallouts()
     return result;
 }
 
+// Query loaded drivers.
 std::vector<DriverDisplayEntry> KernelDevice::queryDrivers()
 {
     std::vector<DriverDisplayEntry> result;
@@ -506,6 +527,7 @@ std::vector<DriverDisplayEntry> KernelDevice::queryDrivers()
     return result;
 }
 
+// Query unloaded drivers from the selected source.
 std::vector<UnloadedDriverDisplayEntry> KernelDevice::queryUnloadedDrivers(ULONG source)
 {
     std::vector<UnloadedDriverDisplayEntry> result;
@@ -527,6 +549,7 @@ std::vector<UnloadedDriverDisplayEntry> KernelDevice::queryUnloadedDrivers(ULONG
     return result;
 }
 
+// Query the device list of a driver object.
 std::vector<DriverDeviceDisplayEntry> KernelDevice::queryDriverDevices(ULONG64 driverObject)
 {
     std::vector<DriverDeviceDisplayEntry> result;
@@ -554,6 +577,7 @@ std::vector<DriverDeviceDisplayEntry> KernelDevice::queryDriverDevices(ULONG64 d
     return result;
 }
 
+// Query the dispatch table of a driver object.
 std::vector<DriverDispatchDisplayEntry> KernelDevice::queryDriverDispatch(ULONG64 driverObject)
 {
     std::vector<DriverDispatchDisplayEntry> result;
@@ -576,6 +600,7 @@ std::vector<DriverDispatchDisplayEntry> KernelDevice::queryDriverDispatch(ULONG6
     return result;
 }
 
+// Query minifilters.
 std::vector<MiniFilterDisplayEntry> KernelDevice::queryFilters()
 {
     std::vector<MiniFilterDisplayEntry> result;
@@ -622,6 +647,7 @@ std::vector<MiniFilterDisplayEntry> KernelDevice::queryFilters()
     return result;
 }
 
+// Query kernel object types.
 std::vector<KernelObjectDisplayEntry> KernelDevice::queryObject()
 {
     std::vector<KernelObjectDisplayEntry> result;
@@ -644,6 +670,7 @@ std::vector<KernelObjectDisplayEntry> KernelDevice::queryObject()
     return result;
 }
 
+// Query the procedures of an object type.
 std::vector<ObjectProcedureDisplayEntry> KernelDevice::queryObjectTypeProcedures(ULONG64 objectType)
 {
     std::vector<ObjectProcedureDisplayEntry> result;
@@ -666,6 +693,7 @@ std::vector<ObjectProcedureDisplayEntry> KernelDevice::queryObjectTypeProcedures
     return result;
 }
 
+// Read a block of kernel memory.
 std::vector<BYTE> KernelDevice::readMemory(ULONG64 address, ULONG64 size)
 {
     std::vector<BYTE> result;

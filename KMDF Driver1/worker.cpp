@@ -33,6 +33,7 @@ static PEX_WORK_QUEUE GetWorkQueue(PEX_PARTITION exPartition, ULONG index0, ULON
 	return queue;
 }
 
+// Enumerate ExPool and IoPool worker threads.
 NTSTATUS WorkerQuery(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	*bytesWritten = 0;

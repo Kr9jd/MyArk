@@ -111,6 +111,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+// Append a line to the log view.
 void MainWindow::logInfo(const QString& text)
 {
     ui->logEdit->appendPlainText(text);
@@ -161,12 +162,14 @@ void MainWindow::copyTableSelection(QTableWidget* table)
     QApplication::clipboard()->setText(lines.join('\n'));
 }
 
+// Log a warning when the driver protocol version does not match.
 void MainWindow::checkProtocolMismatch()
 {
     if (m_device.lastProtocolMismatch())
         logInfo("[ERROR] Driver protocol version mismatch - reload the new KMDFDriver1.sys!");
 }
 
+// Configure columns and styling for every table and tree.
 void MainWindow::setupTables()
 {
     auto styleTable = [this](QTableWidget* t) {
@@ -273,6 +276,7 @@ void MainWindow::setupTables()
     styleTable(ui->objectTable);
 }
 
+// Install the right-click refresh/disassemble/open menu on each view.
 void MainWindow::setupRefreshMenus()
 {
     auto bind = [this](QWidget* widget, void (MainWindow::* slot)())
@@ -320,6 +324,7 @@ void MainWindow::setupRefreshMenus()
     bind(ui->objectTable,           &MainWindow::onRefreshObject);
 }
 
+// Open the file referenced by the selected row in Explorer.
 void MainWindow::openRowInExplorer(QWidget* view, const QPoint& pos)
 {
     QString path;
@@ -351,7 +356,7 @@ void MainWindow::openRowInExplorer(QWidget* view, const QPoint& pos)
             item = tree->currentItem();
         if (!item)
             return;
-        // 节点内 "Value" 列或子节点可能含路径，遍历本节点及其子节点
+        // A path may be in the "Value" column or a child node; walk this node and its children
         path = findPathInTreeItem(item);
     }
 
@@ -365,6 +370,7 @@ void MainWindow::openRowInExplorer(QWidget* view, const QPoint& pos)
     QProcess::startDetached("explorer.exe", { "/select,", native });
 }
 
+// Disassemble the code address found in the selected row.
 void MainWindow::disassembleRow(QWidget* view, const QPoint& pos)
 {
     ULONG64 address = 0;
@@ -422,6 +428,7 @@ void MainWindow::disassembleRow(QWidget* view, const QPoint& pos)
     dlg->show();
 }
 
+// Parse a canonical kernel code address from text.
 bool MainWindow::parseCodeAddress(const QString& text, ULONG64& out)
 {
     QString t = text.trimmed();
@@ -431,18 +438,19 @@ bool MainWindow::parseCodeAddress(const QString& text, ULONG64& out)
     ULONG64 val = t.mid(2).toULongLong(&ok, 16);
     if (!ok)
         return false;
-    // 内核空间规范地址（高 16 位为 0xFFFF），排除小值/用户地址
+    // Canonical kernel address (top 16 bits are 0xFFFF); excludes small/user addresses
     if ((val >> 48) != 0xFFFF)
         return false;
     out = val;
     return true;
 }
 
+// Return true if text is an absolute path to an existing file.
 bool MainWindow::isExistingFile(const QString& text)
 {
     if (text.isEmpty())
         return false;
-    // 形如 C:\... 或 \\... 的绝对路径
+    // Absolute path such as C:\... or \\...
     if (text.length() < 3)
         return false;
     if (!( (text[0].isLetter() && text[1] == ':' && (text[2] == '\\' || text[2] == '/'))
@@ -451,6 +459,7 @@ bool MainWindow::isExistingFile(const QString& text)
     return QFileInfo::exists(text);
 }
 
+// Find an existing file path in a tree item or its children.
 QString MainWindow::findPathInTreeItem(QTreeWidgetItem* item)
 {
     for (int col = item->columnCount() - 1; col >= 0; --col)
@@ -1037,6 +1046,7 @@ void MainWindow::onObjectProcedureDoubleClicked(int row, int column)
     dlg->show();
 }
 
+// Refresh the newly selected top-level tab.
 void MainWindow::onMainTabChanged(int index)
 {
     QWidget* page = ui->mainTabs->widget(index);
@@ -1048,6 +1058,7 @@ void MainWindow::onMainTabChanged(int index)
         onObjectTabChanged(ui->objectTab->currentIndex());
 }
 
+// Refresh the newly selected Kernel sub-tab.
 void MainWindow::onObjectTabChanged(int index)
 {
     QWidget* page = ui->objectTab->widget(index);
@@ -1094,9 +1105,10 @@ void MainWindow::onObjectTabChanged(int index)
         onRefreshObject();
 }
 
+// Refresh the unloaded-driver list when the source changes.
 void MainWindow::onUnloadedSourceChanged(bool checked)
 {
-    // 只在被选中的单选按钮 toggled(true) 时刷新一次
+    // Refresh only when a radio button becomes checked (toggled(true))
     if (checked)
         onRefreshUnloadedDrivers();
 }

@@ -310,6 +310,7 @@ void SsdtInit()
 	ShadowSsdtInitInternal();
 }
 
+// Enumerate the SSDT.
 NTSTATUS SsdtQuery(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	*bytesWritten = 0;
@@ -335,6 +336,7 @@ NTSTATUS SsdtQuery(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* byte
 	return STATUS_SUCCESS;
 }
 
+// Enumerate the shadow SSDT (win32k).
 NTSTATUS SsdtQueryShadow(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	*bytesWritten = 0;

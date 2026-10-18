@@ -12,6 +12,7 @@ static UINT64 IdtEntryToAddress(PKIDTENTRY64 entry)
 	return lowOffset | middleOffset | highOffset;
 }
 
+// Enumerate the IDT entries per CPU.
 NTSTATUS IdtQuery(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	*bytesWritten = 0;

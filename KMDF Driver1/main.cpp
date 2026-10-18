@@ -1,4 +1,4 @@
-﻿#include "utils.h"
+#include "utils.h"
 #include "callback.h"
 #include "timer.h"
 #include "ssdt.h"
@@ -16,8 +16,11 @@ PDRIVER_OBJECT g_DriverObject = NULL;
 #define DEVICE_OBJECT_NAME  L"\\Device\\liunong"
 #define DEVICE_LINK_NAME    L"\\DosDevices\\liunonglink"
 
+// Unload handler: remove the symbolic link and delete the device.
 void DriverUnload(PDRIVER_OBJECT DriverObject);
+// Default IRP dispatch handler.
 NTSTATUS DefaultDispatch(PDEVICE_OBJECT DeviceObject, PIRP Irp);
+// Dispatch IOCTL requests to the matching query handler.
 NTSTATUS IoControlHandler(PDEVICE_OBJECT DeviceObject, PIRP Irp);
 
 extern "C" NTSTATUS DriverEntry(PDRIVER_OBJECT DriverObject, PUNICODE_STRING RegistryPath)

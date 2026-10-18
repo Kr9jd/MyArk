@@ -1,6 +1,7 @@
 #include "object.h"
 #include "utils.h"
 
+// Enumerate kernel object types.
 NTSTATUS KernelObjectQuery(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten) {
 	PVOID* objectTable = nullptr;
 
@@ -68,6 +69,7 @@ NTSTATUS KernelObjectQuery(PVOID outputBuffer, ULONG outputBufferLength, ULONG_P
 	return STATUS_SUCCESS;
 }
 
+// Enumerate the procedures of an object type initializer.
 NTSTATUS ObjectTypeProcedureQuery(PVOID inputBuffer, ULONG inputLength, PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	*bytesWritten = 0;

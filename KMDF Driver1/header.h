@@ -37,7 +37,7 @@ extern "C" NTSTATUS NTAPI ZwQuerySystemInformation(
 
 #pragma pack(push, 8)
 typedef struct _OBJECT_TYPE_INITIALIZER {
-    /* +0x000 */ UCHAR Reserved1[0x030];              // 填充 +0x000 到 +0x02F 的所有无关字段
+    /* +0x000 */ UCHAR Reserved1[0x030];              // padding for all irrelevant fields from +0x000 to +0x02F
 
     /* +0x030 */ PVOID DumpProcedure;                 // Ptr64 void
     /* +0x038 */ PVOID OpenProcedure;                 // Ptr64 long
@@ -51,7 +51,7 @@ typedef struct _OBJECT_TYPE_INITIALIZER {
     /* +0x060 */ PVOID QueryNameProcedure;            // Ptr64 long
     /* +0x068 */ PVOID OkayToCloseProcedure;          // Ptr64 unsigned char
 
-    /* +0x070 */ UCHAR Reserved2[0x008];              // 填充 +0x070 到 +0x077 的剩余结尾字段
+    /* +0x070 */ UCHAR Reserved2[0x008];              // padding for the remaining trailing fields from +0x070 to +0x077
 } OBJECT_TYPE_INITIALIZER, * POBJECT_TYPE_INITIALIZER;
 #pragma pack(pop)
 
@@ -76,13 +76,13 @@ typedef struct _OBJECT_TYPE
     ULONG                   SeTrustConstraintMask;      // +0x0dc
 } OBJECT_TYPE, * POBJECT_TYPE;
 
-struct OB_OPERATION_ENTRY  // 每个 ObjectType/Operation 对一个条目
+struct OB_OPERATION_ENTRY  // one entry per ObjectType/Operation pair
 {
-    LIST_ENTRY  CallbackList;       // +0x00  自链表 (v19->Flink = v19->Blink = v19)
-    ULONG       Operations;         // +0x20  OB_OPERATION_HANDLE_CREATE 等
+    LIST_ENTRY  CallbackList;       // +0x00  self-referential list (v19->Flink = v19->Blink = v19)
+    ULONG       Operations;         // +0x20  OB_OPERATION_HANDLE_CREATE etc.
     ULONG       Padding;            // +0x24
-    PVOID* Registration;  // +0x28  指回外层结构
-    POBJECT_TYPE ObjectType;        // +0x30  *ObjectType (解引用后的值)
+    PVOID* Registration;  // +0x28  points back to the outer structure
+    POBJECT_TYPE ObjectType;        // +0x30  *ObjectType (dereferenced value)
     POB_PRE_OPERATION_CALLBACK  PreOperation;   // +0x38
     POB_POST_OPERATION_CALLBACK PostOperation;  // +0x40
     PVOID       Reserved;           // +0x48  = 0
@@ -112,7 +112,7 @@ struct IMAGE_CALLBACK_ENTRY
 struct CM_CALLBACK_CONTEXT_BLOCK
 {
     LIST_ENTRY  CallbackList;          // +0x00 (v11[0]=Flink, v11[1]=Blink)
-    LARGE_INTEGER Cookie;              // +0x10 (v12 self-init 实际上是编译器优化)
+    LARGE_INTEGER Cookie;              // +0x10  (v12 self-init is actually a compiler optimization)
     LARGE_INTEGER Cookie2;             // +0x18 (*a6 = v11[3] → cookie output)
     PVOID       Context;               // +0x20 (v11[4] = context)
     PVOID       Function;              // +0x28 (v11[5] = function)
@@ -223,8 +223,8 @@ typedef struct _KTHREAD {
     /* 0x0070 */ UCHAR WaitRegister;
     /* 0x0071 */ UCHAR Running;
     /* 0x0072 */ UCHAR Alerted[2];
-    /* 0x0074 */ ULONG MiscFlags;                        // 位域集合
-    /* 0x0078 */ ULONG ThreadFlags;                      // 位域集合
+    /* 0x0074 */ ULONG MiscFlags;                        // bitfield set
+    /* 0x0078 */ ULONG ThreadFlags;                      // bitfield set
     /* 0x007c */ UCHAR Tag;
     /* 0x007d */ UCHAR SameThreadTransientFlags;
     /* 0x007e */ UCHAR SpecCtrl;
@@ -243,7 +243,7 @@ typedef struct _KTHREAD {
     /* 0x00f0 */ PVOID Teb;
     /* 0x00f8 */ ULONG64 RelativeTimerBias;
     /* 0x0100 */ UCHAR Timer[0x40];                      // _KTIMER
-    /* 0x0140 */ UCHAR WaitBlockPad[0x14];               // _KWAIT_BLOCK 填充
+    /* 0x0140 */ UCHAR WaitBlockPad[0x14];               // _KWAIT_BLOCK padding
     /* 0x0154 */ ULONG ContextSwitches;
     /* 0x0158 */ UCHAR Pad_158[0x10];
     /* 0x0168 */ PVOID ThreadCounters;
@@ -379,13 +379,13 @@ typedef struct _KTHREAD {
 } KTHREAD;
 
 // ---------------------------------------------------------------------------
-// 简化版 _ETHREAD 结构体
+// Simplified _ETHREAD structure
 // ---------------------------------------------------------------------------
 typedef struct _ETHREAD {
-    /* 0x0000 */ KTHREAD Tcb;                            // _KTHREAD 占用前 0x4C0 字节
+    /* 0x0000 */ KTHREAD Tcb;                            // _KTHREAD occupies the first 0x4C0 bytes
     /* 0x04c0 */ ULONG64 CreateTime;                     // _LARGE_INTEGER
     /* 0x04c8 */ ULONG64 ExitTime;                       // _LARGE_INTEGER / KeyedWaitChain
-    /* 0x04d0 */ UCHAR Pad_4D0[0x10];                    // PostBlockList / ForwardLinkShadow 填充
+    /* 0x04d0 */ UCHAR Pad_4D0[0x10];                    // PostBlockList / ForwardLinkShadow padding
     /* 0x04e0 */ PVOID StartAddress;
     /* 0x04e8 */ PVOID KeyedWaitValue;                   // TerminationPort / ReaperLink / KeyedWaitValue
     /* 0x04f0 */ ULONG64 ActiveTimerListLock;
@@ -405,9 +405,9 @@ typedef struct _ETHREAD {
     /* 0x0590 */ ULONG64 ThreadLock;                     // _EX_PUSH_LOCK
     /* 0x0598 */ ULONG ReadClusterSize;
     /* 0x059c */ ULONG MmLockOrdering;
-    /* 0x05a0 */ ULONG CrossThreadFlags;                 // 位域标志位
-    /* 0x05a4 */ ULONG SameThreadPassiveFlags;           // 位域标志位
-    /* 0x05a8 */ ULONG SameThreadApcFlags;               // 位域标志位
+    /* 0x05a0 */ ULONG CrossThreadFlags;                 // bitfield flags
+    /* 0x05a4 */ ULONG SameThreadPassiveFlags;           // bitfield flags
+    /* 0x05a8 */ ULONG SameThreadApcFlags;               // bitfield flags
     /* 0x05ac */ UCHAR CacheManagerActive;
     /* 0x05ad */ UCHAR DisablePageFaultClustering;
     /* 0x05ae */ UCHAR ActiveFaultCount;
@@ -455,7 +455,7 @@ typedef struct _ETHREAD {
     /* 0x0700 */ ULONG64 LastSoftParkElectionGeneration;
     /* 0x0708 */ UCHAR LastSoftParkElectionGroupAffinity[0x10]; // _GROUP_AFFINITY
     /* 0x0718 */ ULONG64 UserIsolationDomain;
-    /* 0x0720 */ UCHAR UpdateTebApc[0x54];               // _KAPC 联合体块 (0x0720 ~ 0x0774)
+    /* 0x0720 */ UCHAR UpdateTebApc[0x54];               // _KAPC union block (0x0720 ~ 0x0774)
     /* 0x0774 */ ULONG HeapData;
     /* 0x0778 */ ULONG64 Win32kThreadLock;
     /* 0x0780 */ PVOID ThreadIndex;
@@ -525,7 +525,7 @@ typedef struct _KLDR_DATA_TABLE_ENTRY {
     PVOID ExceptionTable;                   // +0x010
     ULONG ExceptionTableSize;               // +0x018
     PVOID GpValue;                          // +0x020
-    UCHAR NonPagedDebugInfo[8];             // +0x028 (x64 下 8 字节指针空间)
+    UCHAR NonPagedDebugInfo[8];             // +0x028 (8-byte pointer slot on x64)
     PVOID DllBase;                          // +0x030
     PVOID EntryPoint;                       // +0x038
     ULONG SizeOfImage;                      // +0x040
@@ -552,23 +552,23 @@ typedef struct _KLDR_DATA_TABLE_ENTRY {
 typedef struct _CUSTOM_CALLOUT_ENTRY {
     /* 0x00 (0)  */ ULONG  Type;           // *(_DWORD *)v14 = v12
     /* 0x04 (4)  */ ULONG  State;          // *(_DWORD *)(v14 + 4) = 1
-    /* 0x08 (8)  */ UCHAR   Reserved1[8];   // 填充对齐 (0x08 - 0x0F)
-    /* 0x10 (16) */ PVOID ClassifyFn1;    // *(_QWORD *)(v14 + 16) = classifyFn (当 v12 != 3 时)
+    /* 0x08 (8)  */ UCHAR   Reserved1[8];   // padding for alignment (0x08 - 0x0F)
+    /* 0x10 (16) */ PVOID ClassifyFn1;    // *(_QWORD *)(v14 + 16) = classifyFn (when v12 != 3)
     /* 0x18 (24) */ PVOID NotifyFn;       // *(_QWORD *)(v14 + 24) = notifyFn
     /* 0x20 (32) */ PVOID FlowDeleteFn;   // *(_QWORD *)(v14 + 32) = flowDeleteFn
-    /* 0x28 (40) */ PVOID ClassifyFn2;    // *(_QWORD *)(v14 + 40) = classifyFn (当 v12 == 3 时，如 ClassifyFnV2)
+    /* 0x28 (40) */ PVOID ClassifyFn2;    // *(_QWORD *)(v14 + 40) = classifyFn (when v12 == 3, e.g. ClassifyFnV2)
     /* 0x30 (48) */ ULONG  Flags;          // *(_DWORD *)(v14 + 48) = flags
-    /* 0x34 (52) */ UCHAR   Reserved2[20];  // 填充对齐 (0x34 - 0x47)
+    /* 0x34 (52) */ UCHAR   Reserved2[20];  // padding for alignment (0x34 - 0x47)
     /* 0x40 (64) */ PDEVICE_OBJECT DeviceObject; // *(_QWORD *)(v14 + 64) = deviceObject
-    /* 0x48 (72) */ UCHAR   Reserved3[6];   // 填充 (0x48 - 0x4D)
+    /* 0x48 (72) */ UCHAR   Reserved3[6];   // padding (0x48 - 0x4D)
     /* 0x4E (78) */ UCHAR   AttributeA6;    // *(_BYTE *)(v14 + 78) = a6
 } CUSTOM_CALLOUT_ENTRY, * PCUSTOM_CALLOUT_ENTRY;
 
 typedef struct _CALLOUT_DATA {
-    GUID      calloutKey;   // offset: 0x00 (size: 16 字节)
-    ULONG     index;        // offset: 0x10 (对应 *((_DWORD *)v6 + 4))
+    GUID      calloutKey;   // offset: 0x00 (size: 16 bytes)
+    ULONG     index;        // offset: 0x10 (corresponds to *((_DWORD *)v6 + 4))
     UCHAR     padding[12];
-    ULONG     flags;        // offset: 0x20 (对应 *((_DWORD *)v6 + 8))
+    ULONG     flags;        // offset: 0x20 (corresponds to *((_DWORD *)v6 + 8))
     UCHAR     padding1[4];
 } CALLOUT_DATA, * PCALLOUT_DATA;
 
@@ -650,7 +650,7 @@ typedef struct _LASTCHANCE_SHUTDOWN_ENTRY
     _DEVICE_OBJECT* Device;
 }LASTCHANCE_SHUTDOWN_ENTRY,*PLASTCHANCE_SHUTDOWN_ENTRY;
 
-// PiDDB (Driver Database) 缓存条目
+// PiDDB (Driver Database) cache entry
 typedef struct _PiDDBCacheEntry
 {
     LIST_ENTRY      List;               // +0x00

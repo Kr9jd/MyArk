@@ -116,6 +116,7 @@ static ULONG CollectIoTimers(MYARK_TIMER_ENTRY* entries, ULONG maxEntries)
 	return count;
 }
 
+// Enumerate DPC and IO timers.
 NTSTATUS TimerQuery(PVOID outputBuffer, ULONG outputBufferLength, ULONG_PTR* bytesWritten)
 {
 	*bytesWritten = 0;

@@ -84,7 +84,7 @@ void DisassemblyDialog::refresh()
         for (int b = 0; b < insn[i].size; ++b)
             byteStr += QString("%1 ").arg(insn[i].bytes[b], 2, 16, QLatin1Char('0')).toUpper();
         byteStr = byteStr.trimmed();
-        // 字节列补齐到固定宽度（最多 15 字节 = 45 字符）
+        // Pad the byte column to a fixed width (up to 15 bytes = 45 chars)
         byteStr = byteStr.leftJustified(45, ' ');
 
         QString mnem  = QString::fromLatin1(insn[i].mnemonic);

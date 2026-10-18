@@ -1,16 +1,16 @@
-﻿#pragma once
+#pragma once
 
 // ============================================================
-// MyArk R0 <-> R3 通信协议
-// 驱动和用户态程序都包含此文件
+// MyArk R0 <-> R3 communication protocol
+// Shared by the kernel driver and the user-mode client
 // ============================================================
 
-// 确保基础类型已定义
+// Ensure base types are defined
 #ifdef _NTDDK_
-// 内核模式：类型已由 wdm.h/ntddk.h 定义
+// Kernel mode: types are provided by wdm.h/ntddk.h
 
 #else
-// 用户模式：使用 windows.h 的类型
+// User mode: use types from windows.h
 #ifndef _WINDOWS_
 #include <windows.h>
 #endif
@@ -39,65 +39,65 @@ typedef unsigned __int64 ULONG64;
 #define MYARK_CTL(code) \
     CTL_CODE(FILE_DEVICE_MYARK, (code), METHOD_BUFFERED, FILE_ANY_ACCESS)
 
-// IOCTL 代码
-#define IOCTL_MYARK_QUERY_PROCESS       MYARK_CTL(0x830)  // 枚举进程 ObCallback
-#define IOCTL_MYARK_QUERY_OB_CALLBACKS  MYARK_CTL(0x831)  // 枚举 ObRegisterCallbacks
-#define IOCTL_MYARK_QUERY_DRIVER        MYARK_CTL(0x832)  // 枚举加载的驱动模块
+// IOCTL codes
+#define IOCTL_MYARK_QUERY_PROCESS       MYARK_CTL(0x830)  // Enumerate process ObCallback
+#define IOCTL_MYARK_QUERY_OB_CALLBACKS  MYARK_CTL(0x831)  // Enumerate ObRegisterCallbacks
+#define IOCTL_MYARK_QUERY_DRIVER        MYARK_CTL(0x832)  // Enumerate loaded driver modules
 #define IOCTL_MYARK_QUERY_PROCERSS_CALLBACKS  MYARK_CTL(0x833)
 #define IOCTL_MYARK_QUERY_REG_CALLBACKS  MYARK_CTL(0x834)
 
 // ============================================================
-// 通用响应头 — 所有输出结构体的第一个字段
+// Common response header - first field of every output struct
 // ============================================================
 #define MYARK_PROTOCOL_VERSION  3
 
 typedef struct _MYARK_RESPONSE_HEADER
 {
-    ULONG   Status;           // 0 = 成功，其他为错误码
-    ULONG   Count;            // 返回的条目数量
-    ULONG   TotalSize;        // 本次返回的数据总字节数
-    ULONG   ProtocolVersion;  // 协议版本，R3 校验，不匹配请重新加载驱动
+    ULONG   Status;           // 0 = success, otherwise an error code
+    ULONG   Count;            // Number of returned entries
+    ULONG   TotalSize;        // Total bytes returned this call
+    ULONG   ProtocolVersion;  // Protocol version; R3 validates it, reload driver on mismatch
 } MYARK_RESPONSE_HEADER;
 
 // ============================================================
 // IOCTL_MYARK_QUERY_OB_CALLBACKS
-// 输入：无 (InputBufferLength = 0)
-// 输出：MYARK_OB_CALLBACK_RESPONSE
+// Input: none (InputBufferLength = 0)
+// Output: MYARK_OB_CALLBACK_RESPONSE
 // ============================================================
 #define MYARK_MAX_MODULE_NAME   64
 #define MYARK_MAX_MODULE_PATH   260
 
 typedef struct _MYARK_OB_CALLBACK_ENTRY
 {
-    ULONG64     PreOperation;               // 回调函数地址
-    ULONG64     PostOperation;              // 回调函数地址
-    ULONG64     RegistrationHandle;         // ObUnRegisterCallbacks 句柄
-    ULONG       Operations;                 // OB_OPERATION_HANDLE_CREATE 等
+    ULONG64     PreOperation;               // Callback function address
+    ULONG64     PostOperation;              // Callback function address
+    ULONG64     RegistrationHandle;         // ObUnRegisterCallbacks handle
+    ULONG       Operations;                 // OB_OPERATION_HANDLE_CREATE etc.
     ULONG       Type;                       // 0 = Process, 1 = Thread
-    WCHAR       ModuleName[MYARK_MAX_MODULE_NAME]; // 所属模块名（从地址解析）
+    WCHAR       ModuleName[MYARK_MAX_MODULE_NAME]; // Owning module name (resolved from address)
     WCHAR       ModulePath[MYARK_MAX_MODULE_PATH];
 } MYARK_OB_CALLBACK_ENTRY;
 
 typedef struct _MYARK_OB_CALLBACK_RESPONSE
 {
     MYARK_RESPONSE_HEADER   Header;
-    MYARK_OB_CALLBACK_ENTRY Entries[1]; // 变长数组，实际大小 = Header.Count
+    MYARK_OB_CALLBACK_ENTRY Entries[1]; // Variable-length array, actual size = Header.Count
 } MYARK_OB_CALLBACK_RESPONSE;
 
 // ============================================================
 // IOCTL_MYARK_QUERY_DRIVER
-// 输入：无
-// 输出：MYARK_DRIVER_RESPONSE
+// Input: none
+// Output: MYARK_DRIVER_RESPONSE
 // ============================================================
 typedef struct _MYARK_DRIVER_ENTRY
 {
-    ULONG64     DriverObject;           // 未公开：PDRIVER_OBJECT（预留）
+    ULONG64     DriverObject;           // Undocumented: PDRIVER_OBJECT (reserved)
     ULONG64     BaseAddress;            // DllBase
     ULONG       Size;                   // SizeOfImage
     ULONG       Reserved;
-    WCHAR       Name[MYARK_MAX_MODULE_NAME];   // 驱动名（BaseDllName）
-    WCHAR       ObjectName[MYARK_MAX_MODULE_NAME]; // 未公开：对象名（预留）
-    WCHAR       Path[260];              // FullDllName 完整路径
+    WCHAR       Name[MYARK_MAX_MODULE_NAME];   // Driver name (BaseDllName)
+    WCHAR       ObjectName[MYARK_MAX_MODULE_NAME]; // Undocumented: object name (reserved)
+    WCHAR       Path[260];              // Full path (FullDllName)
 } MYARK_DRIVER_ENTRY;
 
 typedef struct _MYARK_DRIVER_RESPONSE
@@ -107,7 +107,7 @@ typedef struct _MYARK_DRIVER_RESPONSE
 } MYARK_DRIVER_RESPONSE;
 
 // ============================================================
-// 计算可变长响应所需缓冲区大小
+// Compute the buffer size needed for a variable-length response
 // ============================================================
 #define MYARK_OB_CALLBACK_RESPONSE_SIZE(count) \
     (sizeof(MYARK_RESPONSE_HEADER) + sizeof(MYARK_OB_CALLBACK_ENTRY) * (count))
@@ -117,12 +117,12 @@ typedef struct _MYARK_DRIVER_RESPONSE
 
 // ============================================================
 // IOCTL_MYARK_QUERY_PROCERSS_CALLBACKS
-// 输入：无
-// 输出：MYARK_PROCESS_CALLBACK_RESPONSE
+// Input: none
+// Output: MYARK_PROCESS_CALLBACK_RESPONSE
 // ============================================================
 typedef struct _MYARK_PROCESS_CALLBACK_ENTRY
 {
-    ULONG64     Callback;                       // 回调函数地址
+    ULONG64     Callback;                       // Callback function address
     ULONG64     Type;
     WCHAR       ModuleName[MYARK_MAX_MODULE_NAME];
     WCHAR       ModulePath[MYARK_MAX_MODULE_PATH];
@@ -139,8 +139,8 @@ typedef struct _MYARK_PROCESS_CALLBACK_RESPONSE
 
 typedef struct _MYARK_REGISTER_CALLBACK_ENTRY
 {
-    ULONG64     Callback;                       // 回调函数地址
-    WCHAR       Altitude[32];                   // 海拔字符串
+    ULONG64     Callback;                       // Callback function address
+    WCHAR       Altitude[32];                   // Altitude string
     WCHAR       ModuleName[MYARK_MAX_MODULE_NAME];
     WCHAR       ModulePath[MYARK_MAX_MODULE_PATH];
 } MYARK_REGISTER_CALLBACK_ENTRY;
@@ -156,14 +156,14 @@ typedef struct _MYARK_REGISTER_CALLBACK_RESPONSE
 
 // ============================================================
 // IOCTL_MYARK_QUERY_TIMERS
-// DPC Timer 与 IO Timer 合并返回
+// Combined DPC timers and IO timers
 // ============================================================
 #define IOCTL_MYARK_QUERY_TIMERS     MYARK_CTL(0x835)
 
 typedef struct _MYARK_TIMER_ENTRY
 {
     ULONG64     Type;               // 0 = DPC Timer, 1 = IO Timer
-    ULONG64     TimerAddress;       // KTIMER* 或 IO_TIMER*
+    ULONG64     TimerAddress;       // KTIMER* or IO_TIMER*
     ULONG64     RoutineAddress;     // DeferredRoutine / TimerRoutine
     WCHAR       ModuleName[MYARK_MAX_MODULE_NAME];
     WCHAR       ModulePath[MYARK_MAX_MODULE_PATH];
@@ -180,8 +180,8 @@ typedef struct _MYARK_TIMER_RESPONSE
 
 // ============================================================
 // IOCTL_MYARK_QUERY_SSDT
-// 输入：无
-// 输出：MYARK_SSDT_RESPONSE（含导出表解析出的函数名）
+// Input: none
+// Output: MYARK_SSDT_RESPONSE (includes function names resolved from the export table)
 // ============================================================
 #define IOCTL_MYARK_QUERY_SSDT       MYARK_CTL(0x836)
 
@@ -196,8 +196,8 @@ typedef struct _MYARK_SSDT_ENTRY
 typedef struct _MYARK_SSDT_RESPONSE
 {
     MYARK_RESPONSE_HEADER   Header;
-    ULONG64                 ModuleBase;         // 服务函数所在模块的内核基址（用于 R3 符号解析）
-    ULONG64                 SelfTestAddress;    // 模块内已知导出函数运行时地址（KeSetTimerEx），用于校验符号映射
+    ULONG64                 ModuleBase;         // Kernel base of the module containing the service (for R3 symbol resolution)
+    ULONG64                 SelfTestAddress;    // Runtime address of a known export (KeSetTimerEx) in the module, used to validate symbol mapping
     MYARK_SSDT_ENTRY        Entries[1];
 } MYARK_SSDT_RESPONSE;
 
@@ -206,13 +206,13 @@ typedef struct _MYARK_SSDT_RESPONSE
 
 // ============================================================
 // IOCTL_MYARK_QUERY_SHADOW_SSDT
-// 输出：MYARK_SSDT_RESPONSE（win32k 服务表，NtUserXxx/NtGdiXxx）
+// Output: MYARK_SSDT_RESPONSE (win32k service table, NtUserXxx/NtGdiXxx)
 // ============================================================
 #define IOCTL_MYARK_QUERY_SHADOW_SSDT  MYARK_CTL(0x837)
 
 // ============================================================
 // IOCTL_MYARK_QUERY_IDT
-// 输出：MYARK_IDT_RESPONSE（按 CPU 分组的 IDT 表项）
+// Output: MYARK_IDT_RESPONSE (IDT entries grouped by CPU)
 // ============================================================
 #define IOCTL_MYARK_QUERY_IDT          MYARK_CTL(0x838)
 
@@ -223,8 +223,8 @@ typedef struct _MYARK_IDT_ENTRY
     USHORT      Selector;
     USHORT      Dpl;
     ULONG64     Address;
-    ULONG64     IsrAddress[4];      // 处理函数地址（独占 1 个；共享最多存前 4 个）
-    ULONG32     IsrCount;           // 真实处理函数数量（共享环上对象数，可能 >4）
+    ULONG64     IsrAddress[4];      // Handler addresses (1 when exclusive; up to the first 4 when shared)
+    ULONG32     IsrCount;           // Actual handler count (objects on a shared chain, may be >4)
     ULONG32     Reserved;
 } MYARK_IDT_ENTRY;
 
@@ -239,15 +239,15 @@ typedef struct _MYARK_IDT_RESPONSE
 
 // ============================================================
 // IOCTL_MYARK_QUERY_SYSTEM_THREADS
-// 输出：MYARK_SYSTEM_THREAD_RESPONSE（System 进程线程链表）
+// Output: MYARK_SYSTEM_THREAD_RESPONSE (System process thread list)
 // ============================================================
 #define IOCTL_MYARK_QUERY_SYSTEM_THREADS  MYARK_CTL(0x839)
 
 typedef struct _MYARK_SYSTEM_THREAD_ENTRY
 {
     ULONG64     Tid;
-    ULONG64     StartAddress;       // 内核入口（PspSystemThreadStartup 等）
-    ULONG64     Win32StartAddress;  // 用户态入口（空 = 系统线程）
+    ULONG64     StartAddress;       // Kernel entry (e.g. PspSystemThreadStartup)
+    ULONG64     Win32StartAddress;  // User-mode entry (empty = system thread)
     CHAR      Priority;
     CHAR      BasePriority;
     ULONG32     State;
@@ -267,7 +267,7 @@ typedef struct _MYARK_SYSTEM_THREAD_RESPONSE
 
 // ============================================================
 // IOCTL_MYARK_QUERY_FILTERS
-// 输出：MYARK_FILTER_RESPONSE（变长：每个 filter 一个 ENTRY + OperationCount 个 OP 条目）
+// Output: MYARK_FILTER_RESPONSE (variable-length: one ENTRY per filter plus OperationCount OP entries)
 // ============================================================
 #define IOCTL_MYARK_QUERY_FILTERS  MYARK_CTL(0x83A)
 
@@ -308,9 +308,9 @@ typedef struct _MYARK_FILTER_ENTRY
 typedef struct _MYARK_FILTER_RESPONSE
 {
     MYARK_RESPONSE_HEADER   Header;
-    // 变长：Header 后依次是：
+    // Variable-length: after the Header come:
     //   MYARK_FILTER_ENTRY + OperationCount * MYARK_FILTER_OPERATION_ENTRY
-    //   （按 Header.Count 个 filter 重复）
+    //   (repeated for Header.Count filters)
 } MYARK_FILTER_RESPONSE;
 
 // ============================================================
@@ -338,7 +338,7 @@ typedef struct _MYARK_KERNEL_OBJECT_RESPONSE
 
 // ============================================================
 // IOCTL_MYARK_QUERY_WORK_THREADS
-// 输出：MYARK_WORK_THREAD_RESPONSE（ExPool / IoPool 工作线程）
+// Output: MYARK_WORK_THREAD_RESPONSE (ExPool / IoPool worker threads)
 // ============================================================
 #define IOCTL_MYARK_QUERY_WORK_THREADS  MYARK_CTL(0x83C)
 
@@ -367,7 +367,7 @@ typedef struct _MYARK_WORK_THREAD_RESPONSE
 
 // ============================================================
 // IOCTL_MYARK_QUERY_WFP_FILTERS
-// 输出：MYARK_WFP_FILTER_RESPONSE
+// Output: MYARK_WFP_FILTER_RESPONSE
 // ============================================================
 #define IOCTL_MYARK_QUERY_WFP_FILTERS   MYARK_CTL(0x83D)
 
@@ -393,7 +393,7 @@ typedef struct _MYARK_WFP_FILTER_RESPONSE
 
 // ============================================================
 // IOCTL_MYARK_QUERY_WFP_CALLOUTS
-// 输出：MYARK_WFP_CALLOUT_RESPONSE
+// Output: MYARK_WFP_CALLOUT_RESPONSE
 // ============================================================
 #define IOCTL_MYARK_QUERY_WFP_CALLOUTS  MYARK_CTL(0x83E)
 
@@ -419,8 +419,8 @@ typedef struct _MYARK_WFP_CALLOUT_RESPONSE
 
 // ============================================================
 // IOCTL_MYARK_QUERY_UNLOADED_DRIVERS
-// 输入：MYARK_UNLOADED_DRIVER_REQUEST（选择枚举来源）
-// 输出：MYARK_UNLOADED_DRIVER_RESPONSE
+// Input: MYARK_UNLOADED_DRIVER_REQUEST (selects the enumeration source)
+// Output: MYARK_UNLOADED_DRIVER_RESPONSE
 // ============================================================
 #define IOCTL_MYARK_QUERY_UNLOADED_DRIVERS  MYARK_CTL(0x840)
 
@@ -452,13 +452,13 @@ typedef struct _MYARK_UNLOADED_DRIVER_RESPONSE
 
 // ============================================================
 // IOCTL_MYARK_QUERY_BUGCHECK_CALLBACKS
-// 输出：MYARK_BUGCHECK_CALLBACK_RESPONSE（KeRegisterBugCheckReasonCallback 回调）
+// Output: MYARK_BUGCHECK_CALLBACK_RESPONSE (KeRegisterBugCheckReasonCallback callbacks)
 // ============================================================
 #define IOCTL_MYARK_QUERY_BUGCHECK_CALLBACKS  MYARK_CTL(0x841)
 
 typedef struct _MYARK_BUGCHECK_CALLBACK_ENTRY
 {
-    ULONG64     Callback;                       // 回调函数地址
+    ULONG64     Callback;                       // Callback function address
     ULONG       Reason;                         // KBUGCHECK_CALLBACK_REASON
     WCHAR       ModuleName[MYARK_MAX_MODULE_NAME];
     WCHAR       ModulePath[MYARK_MAX_MODULE_PATH];
@@ -475,13 +475,13 @@ typedef struct _MYARK_BUGCHECK_CALLBACK_RESPONSE
 
 // ============================================================
 // IOCTL_MYARK_QUERY_SHUTDOWN_CALLBACKS
-// 输出：MYARK_SHUTDOWN_CALLBACK_RESPONSE（IoRegisterLastChanceShutdownNotification 回调）
+// Output: MYARK_SHUTDOWN_CALLBACK_RESPONSE (IoRegisterLastChanceShutdownNotification callbacks)
 // ============================================================
 #define IOCTL_MYARK_QUERY_SHUTDOWN_CALLBACKS  MYARK_CTL(0x842)
 
 typedef struct _MYARK_SHUTDOWN_CALLBACK_ENTRY
 {
-    ULONG64     Callback;                       // 回调函数地址
+    ULONG64     Callback;                       // Callback function address
     WCHAR       ModuleName[MYARK_MAX_MODULE_NAME];
     WCHAR       ModulePath[MYARK_MAX_MODULE_PATH];
 } MYARK_SHUTDOWN_CALLBACK_ENTRY;
@@ -497,13 +497,13 @@ typedef struct _MYARK_SHUTDOWN_CALLBACK_RESPONSE
 
 // ============================================================
 // IOCTL_MYARK_QUERY_BUGCHECK_REGISTERS
-// 输出：MYARK_BUGCHECK_REGISTER_RESPONSE（KeRegisterBugCheckCallback 回调）
+// Output: MYARK_BUGCHECK_REGISTER_RESPONSE (KeRegisterBugCheckCallback callbacks)
 // ============================================================
 #define IOCTL_MYARK_QUERY_BUGCHECK_REGISTERS  MYARK_CTL(0x843)
 
 typedef struct _MYARK_BUGCHECK_REGISTER_ENTRY
 {
-    ULONG64     Callback;                       // 回调函数地址
+    ULONG64     Callback;                       // Callback function address
     WCHAR       Component[MYARK_MAX_MODULE_NAME];
     WCHAR       ModuleName[MYARK_MAX_MODULE_NAME];
     WCHAR       ModulePath[MYARK_MAX_MODULE_PATH];
@@ -520,7 +520,7 @@ typedef struct _MYARK_BUGCHECK_REGISTER_RESPONSE
 
 // ============================================================
 // IOCTL_MYARK_QUERY_NOTIFY_SHUTDOWN
-// 输出：MYARK_NOTIFY_SHUTDOWN_RESPONSE（IoRegisterShutdownNotification 回调）
+// Output: MYARK_NOTIFY_SHUTDOWN_RESPONSE (IoRegisterShutdownNotification callbacks)
 // ============================================================
 #define IOCTL_MYARK_QUERY_NOTIFY_SHUTDOWN  MYARK_CTL(0x844)
 
@@ -541,8 +541,8 @@ typedef struct _MYARK_NOTIFY_SHUTDOWN_RESPONSE
     (sizeof(MYARK_RESPONSE_HEADER) + sizeof(MYARK_NOTIFY_SHUTDOWN_ENTRY) * (count))
 
 // ============================================================
-// 驱动详情查询：输入请求（R3 -> R0）
-// DriverObject 为选中驱动行的 PDRIVER_OBJECT 地址
+// Driver detail query: input request (R3 -> R0)
+// DriverObject is the PDRIVER_OBJECT address of the selected driver row
 // ============================================================
 typedef struct _MYARK_DRIVER_DETAIL_REQUEST
 {
@@ -551,23 +551,23 @@ typedef struct _MYARK_DRIVER_DETAIL_REQUEST
 
 // ============================================================
 // IOCTL_MYARK_QUERY_DRIVER_DEVICES
-// 输入：MYARK_DRIVER_DETAIL_REQUEST
-// 输出：MYARK_DRIVER_DEVICE_RESPONSE（DriverObject->DeviceObject 链表）
+// Input: MYARK_DRIVER_DETAIL_REQUEST
+// Output: MYARK_DRIVER_DEVICE_RESPONSE (DriverObject->DeviceObject list)
 // ============================================================
 #define IOCTL_MYARK_QUERY_DRIVER_DEVICES  MYARK_CTL(0x845)
 
 typedef struct _MYARK_DRIVER_DEVICE_ENTRY
 {
     ULONG64     DeviceObject;       // PDEVICE_OBJECT
-    ULONG64     NextDevice;         // 同驱动设备链表下一个
-    ULONG64     AttachedDevice;     // 附加设备（filter）
+    ULONG64     NextDevice;         // Next device in the same driver's list
+    ULONG64     AttachedDevice;     // Attached device (filter)
     ULONG32     Flags;              // DEVICE_OBJECT->Flags
     ULONG32     Characteristics;
     ULONG32     DeviceType;
     LONG        ReferenceCount;
     ULONG32     StackSize;
     ULONG32     Reserved;
-    WCHAR       DeviceName[MYARK_MAX_MODULE_PATH];  // 对象管理器中的设备名
+    WCHAR       DeviceName[MYARK_MAX_MODULE_PATH];  // Device name in the object manager
 } MYARK_DRIVER_DEVICE_ENTRY;
 
 typedef struct _MYARK_DRIVER_DEVICE_RESPONSE
@@ -581,8 +581,8 @@ typedef struct _MYARK_DRIVER_DEVICE_RESPONSE
 
 // ============================================================
 // IOCTL_MYARK_QUERY_DRIVER_DISPATCH
-// 输入：MYARK_DRIVER_DETAIL_REQUEST
-// 输出：MYARK_DRIVER_DISPATCH_RESPONSE（DriverObject->MajorFunction[0..27]）
+// Input: MYARK_DRIVER_DETAIL_REQUEST
+// Output: MYARK_DRIVER_DISPATCH_RESPONSE (DriverObject->MajorFunction[0..27])
 // ============================================================
 #define IOCTL_MYARK_QUERY_DRIVER_DISPATCH  MYARK_CTL(0x846)
 
@@ -590,7 +590,7 @@ typedef struct _MYARK_DRIVER_DEVICE_RESPONSE
 
 typedef struct _MYARK_DRIVER_DISPATCH_ENTRY
 {
-    ULONG32     MajorFunction;      // IRP_MJ_* 索引
+    ULONG32     MajorFunction;      // IRP_MJ_* index
     ULONG32     Reserved;
     ULONG64     DispatchAddress;    // DriverObject->MajorFunction[index]
     WCHAR       ModuleName[MYARK_MAX_MODULE_NAME];
@@ -608,8 +608,8 @@ typedef struct _MYARK_DRIVER_DISPATCH_RESPONSE
 
 // ============================================================
 // IOCTL_MYARK_QUERY_OBJECT_TYPE_PROCEDURES
-// 输入：MYARK_OBJECT_TYPE_REQUEST（ObjectType 指针）
-// 输出：MYARK_OBJECT_TYPE_PROCEDURE_RESPONSE（_OBJECT_TYPE_INITIALIZER 的 Procedure）
+// Input: MYARK_OBJECT_TYPE_REQUEST (ObjectType pointer)
+// Output: MYARK_OBJECT_TYPE_PROCEDURE_RESPONSE (procedures of _OBJECT_TYPE_INITIALIZER)
 // ============================================================
 #define IOCTL_MYARK_QUERY_OBJECT_TYPE_PROCEDURES  MYARK_CTL(0x847)
 
@@ -622,7 +622,7 @@ typedef struct _MYARK_OBJECT_TYPE_REQUEST
 
 typedef struct _MYARK_OBJECT_PROCEDURE_ENTRY
 {
-    ULONG32     ProcedureId;        // 见 OBJECT_PROCEDURE_ID_*
+    ULONG32     ProcedureId;        // See OBJECT_PROCEDURE_ID_*
     ULONG32     Reserved;
     ULONG64     Address;
     WCHAR       ModuleName[MYARK_MAX_MODULE_NAME];
@@ -665,7 +665,7 @@ typedef struct _MYARK_MEMORY_RESPONSE
 
 // ============================================================
 // IOCTL_MYARK_READ_MEMORY
-// 输入：MYARK_MEMORY_REQUEST
-// 输出：MYARK_MEMORY_RESPONSE（原始字节）
+// Input: MYARK_MEMORY_REQUEST
+// Output: MYARK_MEMORY_RESPONSE (raw bytes)
 // ============================================================
 #define IOCTL_MYARK_READ_MEMORY  MYARK_CTL(0x848)

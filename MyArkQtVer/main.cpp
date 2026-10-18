@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    // Qt 内置 Fusion 风格 + 暗色调色板
+    // Built-in Fusion style + dark palette
     app.setStyle(QStyleFactory::create("Fusion"));
 
     QPalette dark;
