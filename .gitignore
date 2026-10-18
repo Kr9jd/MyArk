@@ -1,0 +1,54 @@
+# Build outputs
+x64/
+Debug/
+Release/
+ARM64/
+[Dd]ebug/
+[Rr]elease/
+*.obj
+*.pdb
+*.ilk
+*.exp
+*.lib
+*.log
+*.tlog
+*.lastbuildstate
+*.ipch
+*.iobj
+*.ipdb
+*.cdf
+*.cache
+
+# Driver build artifacts
+*.sys
+*.cer
+*.cat
+
+# Visual Studio
+.vs/
+*.vcxproj.user
+*.suo
+*.sdf
+*.opensdf
+*.user
+*.aps
+
+# Qt generated
+ui_*.h
+moc_*.cpp
+qrc_*.cpp
+*.qmake.stash
+qt_work.log
+qtvars.log
+
+# Executables / DLLs (kept only under third_party)
+x64/**/*.exe
+
+# OS
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Keep third-party prebuilt libs/dlls
+!third_party/**/*.lib
+!third_party/**/*.dll

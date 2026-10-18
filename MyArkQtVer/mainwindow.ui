@@ -1,0 +1,1088 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindowClass</class>
+ <widget class="QMainWindow" name="MainWindowClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1162</width>
+    <height>581</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MyArk</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="centralLayout">
+    <property name="leftMargin">
+     <number>6</number>
+    </property>
+    <property name="topMargin">
+     <number>6</number>
+    </property>
+    <property name="rightMargin">
+     <number>6</number>
+    </property>
+    <property name="bottomMargin">
+     <number>6</number>
+    </property>
+    <item>
+     <widget class="QTabWidget" name="mainTabs">
+      <property name="currentIndex">
+       <number>2</number>
+      </property>
+      <widget class="QWidget" name="tabProcess">
+       <attribute name="title">
+        <string>Process</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="processLayout">
+        <item>
+         <layout class="QHBoxLayout" name="processTopLayout">
+          <item>
+           <widget class="QLabel" name="processCountLabel">
+            <property name="text">
+             <string>Count: 0</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="processFilterEdit">
+            <property name="placeholderText">
+             <string>Filter by name...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="processSpacer">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="processTable">
+          <property name="editTriggers">
+           <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+          </property>
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabService">
+       <attribute name="title">
+        <string>Service</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="serviceLayout">
+        <item>
+         <layout class="QHBoxLayout" name="serviceTopLayout">
+          <item>
+           <widget class="QLabel" name="serviceCountLabel">
+            <property name="text">
+             <string>Count: 0</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="serviceSpacer">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="serviceTable">
+          <property name="editTriggers">
+           <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+          </property>
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabKernel">
+       <attribute name="title">
+        <string>Kernel</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="kernelLayout">
+        <property name="leftMargin">
+         <number>2</number>
+        </property>
+        <property name="topMargin">
+         <number>2</number>
+        </property>
+        <property name="rightMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
+         <number>2</number>
+        </property>
+        <item>
+         <widget class="QTabWidget" name="objectTab">
+          <property name="currentIndex">
+           <number>12</number>
+          </property>
+          <widget class="QWidget" name="tabObCallbacks">
+           <attribute name="title">
+            <string>ObCallbacks</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="obLayout">
+            <item>
+             <layout class="QHBoxLayout" name="obTopLayout">
+              <item>
+               <widget class="QLabel" name="obCountLabel">
+                <property name="text">
+                 <string>Count: 0</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="obSpacer">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QTableWidget" name="obCallbacksTable">
+              <property name="editTriggers">
+               <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+              </property>
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabProcessCallbacks">
+           <attribute name="title">
+            <string>Process Callbacks</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="procCbLayout">
+            <item>
+             <layout class="QHBoxLayout" name="procCbTopLayout">
+              <item>
+               <widget class="QLabel" name="procCbCountLabel">
+                <property name="text">
+                 <string>Count: 0</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="procCbSpacer">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QTableWidget" name="processCallbacksTable">
+              <property name="editTriggers">
+               <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+              </property>
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabRegCallbacks">
+           <attribute name="title">
+            <string>Registry Callbacks</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="regCbLayout">
+            <item>
+             <layout class="QHBoxLayout" name="regCbTopLayout">
+              <item>
+               <widget class="QLabel" name="regCbCountLabel">
+                <property name="text">
+                 <string>Count: 0</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="regCbSpacer">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+             <item>
+              <widget class="QTableWidget" name="regCallbacksTable">
+               <property name="editTriggers">
+                <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+               </property>
+               <property name="alternatingRowColors">
+                <bool>true</bool>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="tabBugCheckCallbacks">
+            <attribute name="title">
+             <string>BugCheck Callbacks</string>
+            </attribute>
+            <layout class="QVBoxLayout" name="bugCheckCbLayout">
+             <item>
+              <layout class="QHBoxLayout" name="bugCheckCbTopLayout">
+               <item>
+                <widget class="QLabel" name="bugCheckCbCountLabel">
+                 <property name="text">
+                  <string>Count: 0</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="bugCheckCbSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Orientation::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QTableWidget" name="bugCheckCallbacksTable">
+               <property name="editTriggers">
+                <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+               </property>
+               <property name="alternatingRowColors">
+                <bool>true</bool>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="tabShutdownCallbacks">
+            <attribute name="title">
+             <string>Last Chance Shutdown</string>
+            </attribute>
+            <layout class="QVBoxLayout" name="shutdownCbLayout">
+             <item>
+              <layout class="QHBoxLayout" name="shutdownCbTopLayout">
+               <item>
+                <widget class="QLabel" name="shutdownCbCountLabel">
+                 <property name="text">
+                  <string>Count: 0</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="shutdownCbSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Orientation::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QTableWidget" name="shutdownCallbacksTable">
+               <property name="editTriggers">
+                <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+               </property>
+               <property name="alternatingRowColors">
+                <bool>true</bool>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="tabBugCheckRegisters">
+            <attribute name="title">
+             <string>BugCheck Registers</string>
+            </attribute>
+            <layout class="QVBoxLayout" name="bugCheckRegLayout">
+             <item>
+              <layout class="QHBoxLayout" name="bugCheckRegTopLayout">
+               <item>
+                <widget class="QLabel" name="bugCheckRegCountLabel">
+                 <property name="text">
+                  <string>Count: 0</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="bugCheckRegSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Orientation::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QTableWidget" name="bugCheckRegistersTable">
+               <property name="editTriggers">
+                <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+               </property>
+               <property name="alternatingRowColors">
+                <bool>true</bool>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="tabNotifyShutdown">
+            <attribute name="title">
+             <string>Notify Shutdown</string>
+            </attribute>
+            <layout class="QVBoxLayout" name="notifyShutdownLayout">
+             <item>
+              <layout class="QHBoxLayout" name="notifyShutdownTopLayout">
+               <item>
+                <widget class="QLabel" name="notifyShutdownCountLabel">
+                 <property name="text">
+                  <string>Count: 0</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="notifyShutdownSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Orientation::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QTableWidget" name="notifyShutdownTable">
+               <property name="editTriggers">
+                <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+               </property>
+               <property name="alternatingRowColors">
+                <bool>true</bool>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="tabTimers">
+           <attribute name="title">
+            <string>Timers</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="timersLayout">
+            <item>
+             <layout class="QHBoxLayout" name="timersTopLayout">
+              <item>
+               <widget class="QLabel" name="timersCountLabel">
+                <property name="text">
+                 <string>Count: 0</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="timersSpacer">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QTableWidget" name="timersTable">
+              <property name="editTriggers">
+               <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+              </property>
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabSsdt">
+           <attribute name="title">
+            <string>SSDT</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="ssdtLayout">
+            <item>
+             <layout class="QHBoxLayout" name="ssdtTopLayout">
+              <item>
+               <widget class="QLabel" name="ssdtCountLabel">
+                <property name="text">
+                 <string>Count: 0</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="ssdtSpacer">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QTableWidget" name="ssdtTable">
+              <property name="editTriggers">
+               <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+              </property>
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabShadowSsdt">
+           <attribute name="title">
+            <string>ShadowSSDT</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="shadowSsdtLayout">
+            <item>
+             <layout class="QHBoxLayout" name="shadowSsdtTopLayout">
+              <item>
+               <widget class="QLabel" name="shadowSsdtCountLabel">
+                <property name="text">
+                 <string>Count: 0</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="shadowSsdtSpacer">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QTableWidget" name="shadowSsdtTable">
+              <property name="editTriggers">
+               <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+              </property>
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabIdt">
+           <attribute name="title">
+            <string>IDT</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="idtLayout">
+            <item>
+             <layout class="QHBoxLayout" name="idtTopLayout">
+              <item>
+               <widget class="QLabel" name="idtCountLabel">
+                <property name="text">
+                 <string>Count: 0</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="idtSpacer">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QTreeWidget" name="idtTree">
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
+              <column>
+               <property name="text">
+                <string notr="true">1</string>
+               </property>
+              </column>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabSystemThreads">
+           <attribute name="title">
+            <string>System Threads</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="sysThreadsLayout">
+            <item>
+             <layout class="QHBoxLayout" name="sysThreadsTopLayout">
+              <item>
+               <widget class="QLabel" name="sysThreadsCountLabel">
+                <property name="text">
+                 <string>Count: 0</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="sysThreadsSpacer">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QTableWidget" name="systemThreadsTable">
+              <property name="editTriggers">
+               <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+              </property>
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabMiniFilters">
+           <attribute name="title">
+            <string>MiniFilters</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="filtersLayout">
+            <item>
+             <layout class="QHBoxLayout" name="filtersTopLayout">
+              <item>
+               <widget class="QLabel" name="filtersCountLabel">
+                <property name="text">
+                 <string>Count: 0</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="filtersSpacer">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QTreeWidget" name="filtersTree">
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
+              <column>
+               <property name="text">
+                <string notr="true">1</string>
+               </property>
+              </column>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab">
+           <attribute name="title">
+            <string>Kernel Object</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <item>
+               <widget class="QLabel" name="procCbCountLabel_5">
+                <property name="text">
+                 <string>Count: 0</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>29</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QTableWidget" name="objectTable">
+              <property name="editTriggers">
+               <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+              </property>
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabWorkThreads">
+           <attribute name="title">
+            <string>Work Threads</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="workThreadsLayout">
+            <item>
+             <layout class="QHBoxLayout" name="workThreadsTopLayout">
+              <item>
+               <widget class="QLabel" name="workThreadsCountLabel">
+                <property name="text">
+                 <string>Count: 0</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="workThreadsSpacer">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QTableWidget" name="workThreadsTable">
+              <property name="editTriggers">
+               <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+              </property>
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabWfpFilters">
+           <attribute name="title">
+            <string>WFP Filters</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="wfpFiltersLayout">
+            <item>
+             <layout class="QHBoxLayout" name="wfpFiltersTopLayout">
+              <item>
+               <widget class="QLabel" name="wfpFiltersCountLabel">
+                <property name="text">
+                 <string>Count: 0</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="wfpFiltersSpacer">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QTableWidget" name="wfpFiltersTable">
+              <property name="editTriggers">
+               <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+              </property>
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabWfpCallouts">
+           <attribute name="title">
+            <string>WFP Callouts</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="wfpCalloutsLayout">
+            <item>
+             <layout class="QHBoxLayout" name="wfpCalloutsTopLayout">
+              <item>
+               <widget class="QLabel" name="wfpCalloutsCountLabel">
+                <property name="text">
+                 <string>Count: 0</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="wfpCalloutsSpacer">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+             <item>
+              <widget class="QTableWidget" name="wfpCalloutsTable">
+               <property name="editTriggers">
+                <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+               </property>
+               <property name="alternatingRowColors">
+                <bool>true</bool>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="tabDrivers">
+            <attribute name="title">
+             <string>Drivers</string>
+            </attribute>
+            <layout class="QVBoxLayout" name="driversLayout">
+             <item>
+              <layout class="QHBoxLayout" name="driversTopLayout">
+               <item>
+                <widget class="QLabel" name="driversCountLabel">
+                 <property name="text">
+                  <string>Count: 0</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="driversSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Orientation::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QTableWidget" name="driversTable">
+               <property name="editTriggers">
+                <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+               </property>
+               <property name="alternatingRowColors">
+                <bool>true</bool>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="tabUnloadedDrivers">
+            <attribute name="title">
+             <string>Unloaded Drivers</string>
+            </attribute>
+            <layout class="QVBoxLayout" name="unloadedDriversLayout">
+             <item>
+              <layout class="QHBoxLayout" name="unloadedDriversTopLayout">
+               <item>
+                <widget class="QLabel" name="unloadedDriversCountLabel">
+                 <property name="text">
+                  <string>Count: 0</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioMmUnloaded">
+                 <property name="text">
+                  <string>MmUnloadedDrivers</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioPiDDB">
+                 <property name="text">
+                  <string>PiDDBCache</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioCiHash">
+                 <property name="text">
+                  <string>ci.dll HashBucket</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="unloadedDriversSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Orientation::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QTableWidget" name="unloadedDriversTable">
+               <property name="editTriggers">
+                <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+               </property>
+               <property name="alternatingRowColors">
+                <bool>true</bool>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tabNetwork">
+       <attribute name="title">
+        <string>Network</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="networkLayout">
+        <item>
+         <widget class="QPlainTextEdit" name="networkEdit">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+          <property name="plainText">
+           <string>Network connections (not implemented)</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabRegistry">
+       <attribute name="title">
+        <string>Registry</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="registryLayout">
+        <item>
+         <widget class="QTreeWidget" name="registryTree">
+          <property name="headerLabel" stdset="0">
+           <string>Registry (not implemented)</string>
+          </property>
+          <column>
+           <property name="text">
+            <string notr="true">1</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabLog">
+       <attribute name="title">
+        <string>Log</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="logLayout">
+        <item>
+         <widget class="QPlainTextEdit" name="logEdit">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+          <property name="plainText">
+           <string>[INFO] MyArk initialized successfully.</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1162</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+ </widget>
+ <resources>
+  <include location="mainwindow.qrc"/>
+ </resources>
+ <connections/>
+</ui>
+

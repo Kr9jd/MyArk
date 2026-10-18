@@ -1,0 +1,398 @@
+/* =========================================================
+   全局基础设置 (Windows XP Luna 冰蓝风格)
+   ========================================================= */
+QWidget {
+    font-family: "Tahoma", "Microsoft YaHei", sans-serif;
+    font-size: 11px;
+    color: #000000;
+    background-color: #ECE9D8; /* XP 经典的标准淡灰黄底色 */
+}
+
+/* =========================================================
+   0. 自定义标题栏 (Luna 经典蓝天渐变 + 宝石红关闭按钮)
+   ========================================================= */
+QWidget#CustomTitleBar {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                                stop: 0.0 #0058EE, 
+                                stop: 0.08 #3593FF, 
+                                stop: 0.40 #288EFF, 
+                                stop: 0.70 #0061E0, 
+                                stop: 1.0 #0036A6);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    min-height: 30px;
+    max-height: 30px;
+}
+
+/* 标题栏文字：白色加粗 */
+QLabel#TitleText {
+    color: #FFFFFF;
+    font-family: "Tahoma", "Microsoft YaHei";
+    font-weight: bold;
+    font-size: 12px;
+    padding-left: 6px;
+    background: transparent;
+}
+
+/* 标题栏常用按钮 (最小化/最大化) */
+QPushButton#MinButton, QPushButton#MaxButton {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop: 0.0 #FFFFFF, 
+                                stop: 0.3 #7BA2E7, 
+                                stop: 0.7 #3168D4, 
+                                stop: 1.0 #2151B8);
+    border: 1px solid #FFFFFF;
+    border-radius: 3px;
+    color: #FFFFFF;
+    font-weight: bold;
+    min-width: 21px;
+    max-width: 21px;
+    min-height: 21px;
+    max-height: 21px;
+    padding: 0px;
+}
+
+QPushButton#MinButton:hover, QPushButton#MaxButton:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop: 0.0 #FFFFFF, 
+                                stop: 0.3 #A1C1FF, 
+                                stop: 0.7 #4D80E6, 
+                                stop: 1.0 #2F63D4);
+}
+
+/* 标题栏关闭按钮：标志性红宝石颜色 */
+QPushButton#CloseButton {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop: 0.0 #FFF0F0, 
+                                stop: 0.3 #E35E50, 
+                                stop: 0.7 #C02C1D, 
+                                stop: 1.0 #9E1306);
+    border: 1px solid #FFFFFF;
+    border-radius: 3px;
+    color: #FFFFFF;
+    font-weight: bold;
+    min-width: 21px;
+    max-width: 21px;
+    min-height: 21px;
+    max-height: 21px;
+    padding: 0px;
+}
+
+QPushButton#CloseButton:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop: 0.0 #FFFFFF, 
+                                stop: 0.3 #FF7B6E, 
+                                stop: 0.7 #E83A27, 
+                                stop: 1.0 #C01C0B);
+}
+
+/* =========================================================
+   1. QPushButton 按钮 (Luna 经典草绿/天蓝胶囊按钮)
+   ========================================================= */
+QPushButton {
+    /* XP 普通按钮：天蓝微立体渐变 + 柔和圆角 */
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop: 0.0 #FFFFFF, 
+                                stop: 0.15 #F3F3EE, 
+                                stop: 0.85 #E3E3DB, 
+                                stop: 1.0 #D6D6CE);
+    border: 1px solid #003C74; /* Luna 标志性深蓝边框 */
+    border-radius: 3px;
+    color: #000000;
+    padding: 3px 12px;
+    min-height: 21px;
+}
+
+/* XP 默认/主焦点按钮：标志性的草绿色高光胶囊按钮 */
+QPushButton:default {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop: 0.0 #A4DE02, 
+                                stop: 0.15 #70C000, 
+                                stop: 0.85 #50A000, 
+                                stop: 1.0 #3C8000);
+    border: 1px solid #003C74;
+    color: #FFFFFF;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    /* 悬停时带金黄色/浅橙发光边框 */
+    border: 1px solid #E59700;
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop: 0.0 #FFFDF0, 
+                                stop: 0.20 #FFF5CC, 
+                                stop: 0.80 #FFE680, 
+                                stop: 1.0 #FFD93D);
+}
+
+QPushButton:pressed {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop: 0.0 #D6D6CE, 
+                                stop: 0.50 #E3E3DB, 
+                                stop: 1.0 #FFFFFF);
+    border: 1px solid #002240;
+    padding-left: 13px;
+    padding-top: 4px;
+}
+
+QPushButton:disabled {
+    background: #ECE9D8;
+    border: 1px solid #ACA899;
+    color: #ACA899;
+}
+
+/* =========================================================
+   2. 输入框 (QLineEdit & QTextEdit / QPlainTextEdit)
+   ========================================================= */
+QLineEdit, QTextEdit, QPlainTextEdit {
+    background-color: #FFFFFF;
+    border: 1px solid #7F9DB9; /* XP 标志性的灰蓝色输入框边框 */
+    border-radius: 1px;
+    color: #000000;
+    padding: 2px;
+    selection-background-color: #316AC5;
+    selection-color: #FFFFFF;
+}
+
+QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {
+    border: 1px solid #1C5180;
+}
+
+/* =========================================================
+   3. QTabWidget 标签页 (Luna 橙黄顶边橙色高光卡片)
+   ========================================================= */
+QTabWidget::pane {
+    border: 1px solid #003C74;
+    background-color: #FFFFFF;
+    top: -1px;
+}
+
+QTabBar::tab {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop: 0.0 #FBFBF9, 
+                                stop: 0.50 #ECE9D8, 
+                                stop: 1.0 #DEDABF);
+    border: 1px solid #919B9C;
+    border-bottom: none;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    color: #000000;
+    padding: 4px 10px;
+    margin-right: 1px;
+}
+
+QTabBar::tab:hover {
+    border-top: 2px solid #FF9900; /* XP 经典的选项卡悬停橙色顶线 */
+    background: #FFFFFF;
+}
+
+QTabBar::tab:selected {
+    background: #FFFFFF;
+    border: 1px solid #003C74;
+    border-top: 3px solid #FF9900; /* 选中标签页的橙黄色亮线 */
+    border-bottom: 1px solid #FFFFFF;
+    font-weight: bold;
+}
+
+/* =========================================================
+   4. QTableWidget / QTableView 表格控件
+   ========================================================= */
+QTableView, QTableWidget {
+    background-color: #FFFFFF;
+    border: 1px solid #7F9DB9;
+    gridline-color: #D4D0C8;
+    color: #000000;
+    selection-background-color: #316AC5; /* XP 蓝 */
+    selection-color: #FFFFFF;
+}
+
+/* 表格列头 (Luna 天蓝淡灰色柱头) */
+QHeaderView::section {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop: 0.0 #FFFFFF, 
+                                stop: 0.60 #ECE9D8, 
+                                stop: 1.0 #D6D6CE);
+    color: #000000;
+    padding: 3px;
+    border: 1px solid #ACA899;
+    border-top: none;
+    border-left: none;
+}
+
+QHeaderView::section:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop: 0.0 #FFFDF0, 
+                                stop: 1.0 #FFE680);
+}
+
+/* =========================================================
+   5. QTreeView / QTreeWidget 树状控件
+   ========================================================= */
+QTreeView, QTreeWidget {
+    background-color: #FFFFFF;
+    border: 1px solid #7F9DB9;
+    color: #000000;
+    show-decoration-selected: 1;
+}
+
+QTreeView::item {
+    padding: 1px 2px;
+}
+
+QTreeView::item:hover {
+    background-color: #FFE680; /* 淡金黄色悬停 */
+    color: #000000;
+}
+
+QTreeView::item:selected {
+    background-color: #316AC5;
+    color: #FFFFFF;
+}
+
+/* =========================================================
+   6. 补充控件 (QComboBox 下拉框 & 经典黄/绿色进度条)
+   ========================================================= */
+QComboBox {
+    background: #FFFFFF;
+    border: 1px solid #7F9DB9;
+    border-radius: 2px;
+    padding: 2px 18px 2px 3px;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 16px;
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop: 0.0 #B2D0F7, 
+                                stop: 1.0 #5A94D6);
+    border-left: 1px solid #7F9DB9;
+}
+
+/* Windows XP 标志性的分段式翡翠绿进度条 */
+QProgressBar {
+    border: 1px solid #686868;
+    border-radius: 2px;
+    text-align: center;
+    background-color: #FFFFFF;
+}
+
+QProgressBar::chunk {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop: 0.0 #A4DE02, 
+                                stop: 0.50 #50A000, 
+                                stop: 1.0 #3C8000);
+    width: 8px; /* 模拟 XP 独特的方块间隔进度条效果 */
+    margin: 0.5px;
+}
+
+/* =========================================================
+   7. QRadioButton 单选框 (Windows XP Luna 圆形凹陷样式)
+   ========================================================= */
+QRadioButton {
+    background: transparent;
+    color: #000000;
+    padding: 1px;
+    spacing: 5px;
+}
+
+QRadioButton:disabled {
+    color: #ACA899;
+}
+
+/* 未选中：白色圆形 + 凹陷灰蓝边框 */
+QRadioButton::indicator {
+    width: 13px;
+    height: 13px;
+    border: 1px solid #7F9DB9;
+    border-radius: 7px;
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.9,
+                                stop: 0.0 #FFFFFF,
+                                stop: 0.75 #FFFFFF,
+                                stop: 1.0 #D6E4F5);
+}
+
+/* 悬停：淡金色提示 */
+QRadioButton::indicator:hover {
+    border: 1px solid #E59700;
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.9,
+                                stop: 0.0 #FFFFFF,
+                                stop: 0.75 #FFFDF0,
+                                stop: 1.0 #FFE680);
+}
+
+/* 选中：内嵌深蓝圆点（XP 经典选中色） */
+QRadioButton::indicator:checked {
+    border: 1px solid #7F9DB9;
+    background: qradialgradient(cx:6px, cy:6px, radius:3px,
+                                stop: 0.0 #1C5180,
+                                stop: 0.99 #1C5180,
+                                stop: 1.0 #FFFFFF);
+}
+
+QRadioButton::indicator:checked:hover {
+    border: 1px solid #E59700;
+    background: qradialgradient(cx:6px, cy:6px, radius:3px,
+                                stop: 0.0 #1C5180,
+                                stop: 0.99 #1C5180,
+                                stop: 1.0 #FFFDF0);
+}
+
+QRadioButton::indicator:disabled {
+    border: 1px solid #ACA899;
+    background: #ECE9D8;
+}
+
+QRadioButton::indicator:checked:disabled {
+    border: 1px solid #ACA899;
+    background: qradialgradient(cx:6px, cy:6px, radius:3px,
+                                stop: 0.0 #ACA899,
+                                stop: 0.99 #ACA899,
+                                stop: 1.0 #ECE9D8);
+}
+
+/* =========================================================
+   8. QCheckBox 复选框 (Windows XP Luna 方形凹陷样式)
+   ========================================================= */
+QCheckBox {
+    background: transparent;
+    color: #000000;
+    padding: 1px;
+    spacing: 5px;
+}
+
+QCheckBox:disabled {
+    color: #ACA899;
+}
+
+QCheckBox::indicator {
+    width: 13px;
+    height: 13px;
+    border: 1px solid #7F9DB9;
+    border-radius: 2px;
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop: 0.0 #FFFFFF,
+                                stop: 0.55 #F7FAFF,
+                                stop: 1.0 #D6E4F5);
+}
+
+QCheckBox::indicator:hover {
+    border: 1px solid #E59700;
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop: 0.0 #FFFFFF,
+                                stop: 0.55 #FFFDF0,
+                                stop: 1.0 #FFE680);
+}
+
+QCheckBox::indicator:checked {
+    border: 1px solid #1C5180;
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop: 0.0 #4A90E2,
+                                stop: 0.55 #1C5180,
+                                stop: 1.0 #003C74);
+}
+
+QCheckBox::indicator:disabled {
+    border: 1px solid #ACA899;
+    background: #ECE9D8;
+}
